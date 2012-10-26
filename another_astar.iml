@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="another_astar">
     <configurations>
-      <configuration name="another_astar" pure-as="true" main-class="Another_astar" output-file="Another_astar.swf" output-folder="$MODULE_DIR$/../../container/out/production/another_astar" use-html-wrapper="true" wrapper-template-path="$MODULE_DIR$/html-template">
+      <configuration name="another_astar" pure-as="true" main-class="Another_astar" output-file="Another_astar.swf" output-folder="$MODULE_DIR$/../../container/out/production/another_astar" wrapper-template-path="$MODULE_DIR$/html-template">
         <dependencies target-player="11.1">
           <sdk name="flexsdk 11.1" />
         </dependencies>
