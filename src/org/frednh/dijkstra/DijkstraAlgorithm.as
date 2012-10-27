@@ -6,67 +6,131 @@
  * To change this template use File | Settings | File Templates.
  */
 package org.frednh.dijkstra {
-	import flash.utils.Dictionary;
+    import flash.utils.Dictionary;
 
-	import org.frednh.graph.INode;
-	import org.frednh.graph.Node;
+    import org.frednh.IAlgorithm;
+    import org.frednh.graph.INode;
 
-	public class DijkstraAlgorithm {
+    public class DijkstraAlgorithm implements IAlgorithm {
 
-		public function DijkstraAlgorithm() {
-		}
+        public function DijkstraAlgorithm() {
+        }
 
-		public function execute (fromNode : INode, toNode : INode, nodesList : Vector.<INode>) : Vector.<INode> {
-			for each (var node : INode in nodesList) {
-				node.distanceInRoad = int.MAX_VALUE;
-			}
+        public function execute(fromNode:INode, toNode:INode, nodesList:Vector.<INode>):Vector.<INode> {
+            return getTheFastestWay(fromNode, toNode, nodesList);
+        }
 
-			fromNode.distanceInRoad = 0;
+        public function get lastExecutionCost():int {
+            return lastExecutionInc;
+        }
 
-			var availableNodes:Vector.<INode> = nodesList.concat();
-			availableNodes.splice(availableNodes.indexOf(fromNode), 1);
-			return getTheFastestWay(fromNode, toNode, availableNodes);
-		}
+        public function get trackNodesCount():int {
+            return _trackNodesCount;
+        }
 
-		internal static function getTheFastestWay (fromNode : INode, toNode : INode, availableNodes : Vector.<INode>) : Vector.<INode> {
-			var roads : Dictionary = new Dictionary(true);
-			var currentRoad : Vector.<INode> = new Vector.<INode>();
-			currentRoad.push(fromNode);
-			roads[fromNode] = currentRoad;
+        public function get redondance():int {
+            return _redondance;
+        }
 
-			while(availableNodes.length > 0) {
-				if (fromNode.distanceInRoad == int.MAX_VALUE) {
-					return null;
-				}
+        protected final function getTheFastestWay(fromNode:INode, toNode:INode, availableNodes:Vector.<INode>, useHeuristic:Boolean = false):Vector.<INode> {
+            if (!toNode.isEnabled) {
+                return null;
+            }
 
-				currentRoad = roads[fromNode];
+            lastExecutionInc = 0;
+            _redondance = 0;
+            _trackNodesCount = 0;
+            for each (var node:INode in availableNodes) {
+                node.distanceInRoad = int.MAX_VALUE;
+                node.heuristicDistanceInRoad = int.MAX_VALUE;
+                node.checked = false;
+            }
 
-				if (fromNode == toNode) {
-					return currentRoad;
-				}
+            fromNode.distanceInRoad = 0;
+            fromNode.heuristicDistanceInRoad = 0;
+            var availableNodes:Vector.<INode> = new Vector.<INode>();
+            availableNodes.splice(availableNodes.indexOf(fromNode), 1);
 
-				var successors : Vector.<INode> = fromNode.successors;
+            var roads:Dictionary = new Dictionary(true);
+            var currentRoad:Vector.<INode> = new Vector.<INode>();
+            currentRoad.push(fromNode);
+            roads[fromNode] = currentRoad;
 
-				// Updates successors distance in the road:
-				var successorRoad : Vector.<INode>;
-				for each (var successor : INode in successors) {
+            while (true) {
+                lastExecutionInc++;
+                if (fromNode.checked) {
+                    _redondance ++;
+                } else {
+                    _trackNodesCount++;
+                }
+                fromNode.checked = true;
+                if (fromNode.distanceInRoad == int.MAX_VALUE) {
+                    return null;
+                }
 
-					var distanceInRoad:int = fromNode.getVerticeValue(successor) + fromNode.distanceInRoad;
-					if (distanceInRoad > successor.distanceInRoad) {
-						continue;
-					}
-					successor.distanceInRoad = distanceInRoad;
-					successorRoad = currentRoad.concat();
-					successorRoad.push(successor);
-					roads[successor] = successorRoad;
-				}
-				availableNodes = availableNodes.sort(Node.minDistanceSorting);
-//				trace("\tAvailable nodes: \n\t\t\t" +  availableNodes.join("\n\t\t\t") + "\n\t\t\t");
-				fromNode = availableNodes.shift();
-				currentRoad.push(fromNode);
-			}
-			return null;
-		}
+                currentRoad = roads[fromNode];
 
-	}
+                if (fromNode == toNode) {
+                    return currentRoad;
+                }
+
+                // Updates successors distance in the road:
+                var successorRoad:Vector.<INode>;
+                for each (var successor:INode in fromNode.successors) {
+                    if (!successor.isEnabled) {
+                        continue;
+                    }
+                    lastExecutionInc++;
+
+                    var distanceInRoad:int = fromNode.getVerticeValue(successor)
+                                    + fromNode.distanceInRoad
+                            ;
+                    if (distanceInRoad > successor.distanceInRoad) {
+                        continue;
+                    }
+                    successor.distanceInRoad = distanceInRoad;
+
+                    successor.heuristicDistanceInRoad = distanceInRoad + successor.heuristicDistance(toNode);
+                    successorRoad = currentRoad.concat();
+                    successorRoad.push(successor);
+                    roads[successor] = successorRoad;
+
+                    var insertIndex:int = 0;
+
+                    if (availableNodes.length == 0) {
+                        availableNodes.push(successor);
+                        continue;
+                    }
+
+                    if (availableNodes.indexOf(successor) != -1) {
+                        continue;
+                    }
+                    while (availableNodes[insertIndex].heuristicDistanceInRoad < successor.heuristicDistanceInRoad
+
+                            ) {
+                        lastExecutionInc++;
+                        insertIndex++;
+                        if (insertIndex >= availableNodes.length - 1) {
+                            break;
+                        }
+                    }
+                    availableNodes.splice(insertIndex, 0, successor);
+                }
+
+                if (availableNodes.length <= 0) {
+                    break;
+                }
+
+                currentRoad.push(fromNode);
+                fromNode = availableNodes.shift();
+            }
+
+            return null;
+        }
+
+        private var _trackNodesCount : int = 0;
+        private var _redondance : int = 0;
+
+        public static var lastExecutionInc:int = 0;
+    }
 }

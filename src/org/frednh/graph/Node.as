@@ -6,9 +6,11 @@
  * To change this template use File | Settings | File Templates.
  */
 package org.frednh.graph {
-	import flash.utils.Dictionary;
+    import flash.utils.Dictionary;
 
-	public class Node implements INode{
+    import org.frednh.dijkstra.DijkstraAlgorithm;
+
+    public class Node implements INode{
 
 		public function Node(name : String) {
 			resetNode();
@@ -25,7 +27,13 @@ package org.frednh.graph {
 			_verticesValues[node] = verticeValue;
 		}
 
-		public function get successors():Vector.<INode> {
+        public function removeSuccessor(node:INode):void {
+            _successors.splice(_successors.indexOf(node), 1);
+            _verticesValues[node] = null;
+            delete _verticesValues[node];
+        }
+
+        public function get successors():Vector.<INode> {
 			return _successors;
 		}
 
@@ -37,11 +45,19 @@ package org.frednh.graph {
 			_distanceInRoad = value;
 		}
 
-		public function get predecessors():Vector.<INode> {
+		public function get heuristicDistanceInRoad():Number {
+            return _heuristicDistanceInRoad;
+        }
+
+        public function set heuristicDistanceInRoad(value:Number):void {
+            _heuristicDistanceInRoad = value;
+        }
+
+        public function get predecessors():Vector.<INode> {
 			return _predecessors;
 		}
 
-		public function heuristicDistance(toNode:INode):int {
+		public function heuristicDistance(toNode:INode):Number {
 			return 0;
 		}
 
@@ -54,22 +70,42 @@ package org.frednh.graph {
 		}
 
 		public static function minDistanceSorting(nodeA : INode, nodeB : INode) : int {
-			if (nodeA.distanceInRoad < nodeB.distanceInRoad) return -1;
-			if (nodeA.distanceInRoad > nodeB.distanceInRoad) return 1;
+            DijkstraAlgorithm.lastExecutionInc++;
+			if (nodeA.heuristicDistanceInRoad < nodeB.heuristicDistanceInRoad) return -1;
+			if (nodeA.heuristicDistanceInRoad > nodeB.heuristicDistanceInRoad) return 1;
 			return 0;
 		}
 
-		private function resetNode () : void {
+        public function get isEnabled():Boolean {
+            return _isEnabled;
+        }
+
+        public function set isEnabled(value:Boolean):void {
+            _isEnabled = value;
+        }
+
+        public function get checked():Boolean {
+            return _checked;
+        }
+
+        public function set checked(value:Boolean):void {
+            _checked = value;
+        }
+
+        private function resetNode () : void {
 			_predecessors = new Vector.<INode>();
 			_successors = new Vector.<INode>();
 			_verticesValues = new Dictionary();
 			_distanceInRoad = 0;
 		}
 
+        private var _heuristicDistanceInRoad : Number;
 		private var _name : String;
 		private var _predecessors : Vector.<INode>;
 		private var _successors : Vector.<INode>;
 		private var _verticesValues : Dictionary;
 		private var _distanceInRoad : int;
+        private var _isEnabled : Boolean = true;
+        private var _checked : Boolean = false;
 	}
 }

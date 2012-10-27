@@ -1,11 +1,11 @@
 /**
  */
 package org.frednh.graph {
-
-	/**
+    /**
 	 * Graph node interface
 	 */
 	public interface INode {
+
 		/**
 		 * Neighbour nodes. Available for non oriented graphs.
 		 */
@@ -23,6 +23,11 @@ package org.frednh.graph {
 		 */
 		function addSuccessor (node : INode, verticeValue : int) : void;
 
+        /**
+         * Removes a successor
+         * @param node
+         */
+        function removeSuccessor (node : INode) : void;
 		/**
 		 * Successor nodes. Available for oriented graphs.
 		 */
@@ -33,9 +38,11 @@ package org.frednh.graph {
 		 * @param toNode
 		 * @return
 		 */
-		function heuristicDistance (toNode : INode) : int;
+		function heuristicDistance (toNode : INode) : Number;
+        function get heuristicDistanceInRoad () : Number;
+        function set heuristicDistanceInRoad (value : Number) : void;
 
-		/**
+        /**
 		 * Distance from this node to another.
 		 * @param toNode A neighbour, or predecessor, or successor node.
 		 * @return
@@ -47,5 +54,11 @@ package org.frednh.graph {
 		 */
 		function get distanceInRoad () : int;
 		function set distanceInRoad (value : int) : void;
-	}
+
+        function get isEnabled () : Boolean;
+        function set isEnabled (value : Boolean) : void;
+
+        function get checked () : Boolean;
+        function set checked (value : Boolean) : void;
+    }
 }

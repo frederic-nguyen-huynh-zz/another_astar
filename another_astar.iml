@@ -2,9 +2,9 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="another_astar">
     <configurations>
-      <configuration name="another_astar" pure-as="true" main-class="Another_astar" output-file="Another_astar.swf" output-folder="$MODULE_DIR$/../../container/out/production/another_astar" wrapper-template-path="$MODULE_DIR$/html-template">
-        <dependencies target-player="11.1">
-          <sdk name="flexsdk 11.1" />
+      <configuration name="another_astar" pure-as="true" main-class="Another_astar" output-file="Another_astar.swf" output-folder="$MODULE_DIR$/../../container/out/production/another_astar" use-html-wrapper="true" wrapper-template-path="$MODULE_DIR$/html-template">
+        <dependencies target-player="10">
+          <sdk name="flex3.5" />
         </dependencies>
         <compiler-options />
         <packaging-air-desktop />
@@ -19,7 +19,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="flexsdk 11.1" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="jdk" jdkName="flex3.5" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
