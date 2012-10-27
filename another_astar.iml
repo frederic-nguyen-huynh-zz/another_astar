@@ -4,6 +4,11 @@
     <configurations>
       <configuration name="another_astar" pure-as="true" main-class="Another_astar" output-file="Another_astar.swf" output-folder="$MODULE_DIR$/../../container/out/production/another_astar" use-html-wrapper="true" wrapper-template-path="$MODULE_DIR$/html-template">
         <dependencies target-player="10">
+          <entries>
+            <entry library-name="jelly-birth-animation" library-level="application">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
           <sdk name="flex3.5" />
         </dependencies>
         <compiler-options />
@@ -21,6 +26,7 @@
     </content>
     <orderEntry type="jdk" jdkName="flex3.5" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="jelly-birth-animation" level="application" />
   </component>
 </module>
 

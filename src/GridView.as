@@ -12,19 +12,25 @@ package {
     import flash.events.MouseEvent;
     import flash.utils.getTimer;
 
+    import org.frednh.compression.CompressedRoad;
     import org.frednh.graph.Grid;
     import org.frednh.graph.IGridNode;
     import org.frednh.graph.INode;
     import org.frednh.graph.NodeEvent;
+    import org.test.AvatarModel;
+    import org.test.AvatarView;
 
     public class GridView extends Sprite {
 
 
-        public function GridView(grid:Grid) {
+        public function GridView(grid:Grid, avatarModel : AvatarModel) {
             super();
             _grid = grid;
+            _avatarModel = avatarModel;
+            _avatarView = new AvatarView(avatarModel, _CELL_SIZE, _CELL_MARGIN);
             _roadClip = new Shape();
             this.addChild(_roadClip);
+            this.addChild(_avatarView);
             updateDraw();
             this.addEventListener(MouseEvent.CLICK, onClick);
         }
@@ -47,7 +53,7 @@ package {
                 if (i == 0) { color = _INROAD_COLOR_FIRST; }
                 if (i == road.length - 1) { color = _INROAD_COLOR_LAST; }
 
-                roadGraphics.beginFill(color);
+                roadGraphics.beginFill(color, 0.5);
                 roadGraphics.drawRect(
                         IGridNode(node).x * (_CELL_SIZE + _CELL_MARGIN)
                         , IGridNode(node).y * (_CELL_SIZE + _CELL_MARGIN)
@@ -59,6 +65,9 @@ package {
             return;
         }
 
+        public function moveModel (compressedRoad : CompressedRoad) : void {
+            _avatarView.move(compressedRoad);
+        }
 
         private function updateDraw():void {
             graphics.clear();
@@ -96,6 +105,10 @@ package {
 
         private var _grid:Grid;
         private var _roadClip : Shape;
+        private var _avatarModel : AvatarModel;
+        private var _avatarView : AvatarView;
+
+
 
         private static const _DISABLED_COLOR:uint = 0xDD3333;
         private static const _INACTIVE_COLOR:uint = 0xCC77AA;
@@ -105,7 +118,7 @@ package {
         private static const _INROAD_COLOR:uint = 0x11AA11;
         private static const _INROAD_COLOR_LAST:uint = 0x11FF11;
 
-        private static const _CELL_SIZE:int = 10;
+        private static const _CELL_SIZE:int = 20;
         private static const _CELL_MARGIN:int = 1;
     }
 }

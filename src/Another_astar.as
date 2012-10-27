@@ -14,8 +14,9 @@ package {
     import org.frednh.graph.INode;
     import org.frednh.graph.Node;
     import org.frednh.graph.NodeEvent;
+    import org.test.AvatarModel;
 
-    [SWF(height=768, width=1024)]
+    [SWF(height=768, width=1024, frameRate=32)]
     public class Another_astar extends Sprite {
 
         public function Another_astar() {
@@ -57,7 +58,7 @@ package {
             road = algo.execute(from, to, graph);
             trace("O=" + algo.lastExecutionCost + " | " + road.join(" -> "));
 
-            var gridView:GridView = new GridView(grid);
+            var gridView:GridView = new GridView(grid, _avatarModel);
             this.addChild(gridView);
             gridView.drawRoad(road);
 
@@ -69,7 +70,7 @@ package {
             createWall();
             _actualNode = _graph.getNode(0, 0);
 
-            _graphView = new GridView(_graph);
+            _graphView = new GridView(_graph, _avatarModel);
             this.addChild(_graphView);
             _graphView.x = 10;
 
@@ -96,6 +97,7 @@ package {
             _actualNode = to;
 
             var compressedRoad:CompressedRoad = _roadCompression.execute(road);
+            _graphView.moveModel(compressedRoad);
             trace("-------------- ROAD COMPRESSION : ");
             trace("Execution cost: " + _roadCompression.lastExecutionCost);
             trace("Track nodes count: " + _roadCompression.trackNodesCount);
@@ -161,6 +163,8 @@ package {
         private var _graphView:GridView;
         private var _graph:Grid;
         private var _actualNode:INode;
+        private var _avatarModel : AvatarModel = new AvatarModel();
+
 
         private var _roadCompression:RoadCompression = new RoadCompression();
         private var _algorithm:IAlgorithm = new AStarAlgorithm();
